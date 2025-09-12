@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS order_time;
 DROP TABLE IF EXISTS events;
+DROP TABLE IF EXISTS order_items;
 
 CREATE TABLE users (
     user_id INTEGER PRIMARY KEY,
@@ -85,7 +86,13 @@ product_ids = [row[0] for row in cur.execute("SELECT product_id FROM products").
 
 for i in range(200):  
     user_id = random.choice(user_ids)
-    order_date = fake.date_time_between(start_date="-6m", end_date="now")
+
+    start_date = datetime.now() - timedelta(days=180)
+    end_date = datetime.now()
+    
+    order_date = fake.date_time_between_dates(
+        datetime_start=start_date, datetime_end=end_date
+    )
     total_amount = 0
     cur.execute("INSERT INTO orders (user_id, order_date, total_amount) VALUES (?, ?, ?)",
                 (user_id, order_date, total_amount))
